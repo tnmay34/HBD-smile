@@ -142,10 +142,21 @@
             </div>
         </div>
     </div>
-<audio id="backgroundMusic" loop autoplay>
-  <source src="happy-birthday-334876.mp3" type="Build/mpeg">
+<audio id="backgroundMusic" loop>
+  <source src="Build/happy-birthday-334876.mp3" type="Build/mpeg">
   Your browser does not support the audio element.
 </audio>
+
+<div id="musicPrompt">
+  <div class="music-prompt-content">
+    <h3>🎵 Background Music 🎵</h3>
+    <p>Would you like to play background music?</p>
+    <div class="prompt-buttons">
+      <button id="enableMusic">Yes, please!</button>
+      <button id="disableMusic">No thanks</button>
+    </div>
+  </div>
+</div>
 </body>
 <script>
     let datetxt = "14 Sept 2002";
@@ -233,25 +244,56 @@
         $(".box__letter").slideUp();
         $(".letter__border").slideUp();
     })
-    // Auto-play background music
+    // Background music handling
 document.addEventListener('DOMContentLoaded', function() {
   const audio = document.getElementById('backgroundMusic');
+  const musicPrompt = document.getElementById('musicPrompt');
   
-  // Try to play automatically
-  const playAudio = () => {
+  // Set volume level (0.0 to 1.0)
+  audio.volume = 0.7; // 70% volume
+  
+  // Show prompt after a short delay
+  setTimeout(() => {
+    musicPrompt.style.display = 'flex';
+  }, 2000);
+  
+  // Enable music button
+  document.getElementById('enableMusic').addEventListener('click', function() {
     audio.play().catch(e => {
-      console.log("Autoplay prevented:", e);
+      console.log("Play error:", e);
     });
-  };
+    musicPrompt.style.display = 'none';
+    
+    // Store preference
+    localStorage.setItem('musicPreference', 'enabled');
+  });
   
-  // Try to play after a short delay
-  setTimeout(playAudio, 1000);
+  // Disable music button
+  document.getElementById('disableMusic').addEventListener('click', function() {
+    musicPrompt.style.display = 'none';
+    
+    // Store preference
+    localStorage.setItem('musicPreference', 'disabled');
+  });
   
-  // Also try to play on any user interaction
-  document.addEventListener('click', function() {
-    playAudio();
-    // Remove the event after first successful interaction
-    document.removeEventListener('click', arguments.callee);
+  // Check if user has already made a choice
+  const musicPreference = localStorage.getItem('musicPreference');
+  if (musicPreference === 'enabled') {
+    // User previously enabled music, try to play
+    setTimeout(() => {
+      audio.play().catch(e => {
+        console.log("Auto-play on return visit failed");
+      });
+    }, 1000);
+  } else if (musicPreference === 'disabled') {
+    // User previously disabled music, don't show prompt
+    musicPrompt.style.display = 'none';
+  }
+  
+  // Handle when audio ends (though loop should prevent this)
+  audio.addEventListener('ended', function() {
+    audio.currentTime = 0;
+    audio.play();
   });
 });
 </script>
