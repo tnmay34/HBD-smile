@@ -142,7 +142,10 @@
             </div>
         </div>
     </div>
-
+<audio id="backgroundMusic" loop autoplay>
+  <source src="happy-birthday-334876.mp3" type="Build/mpeg">
+  Your browser does not support the audio element.
+</audio>
 </body>
 <script>
     let datetxt = "14 Sept 2002";
@@ -230,5 +233,26 @@
         $(".box__letter").slideUp();
         $(".letter__border").slideUp();
     })
+    // Auto-play background music
+document.addEventListener('DOMContentLoaded', function() {
+  const audio = document.getElementById('backgroundMusic');
+  
+  // Try to play automatically
+  const playAudio = () => {
+    audio.play().catch(e => {
+      console.log("Autoplay prevented:", e);
+    });
+  };
+  
+  // Try to play after a short delay
+  setTimeout(playAudio, 1000);
+  
+  // Also try to play on any user interaction
+  document.addEventListener('click', function() {
+    playAudio();
+    // Remove the event after first successful interaction
+    document.removeEventListener('click', arguments.callee);
+  });
+});
 </script>
 </html>
